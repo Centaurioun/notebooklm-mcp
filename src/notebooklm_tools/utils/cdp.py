@@ -436,13 +436,18 @@ def launch_chrome_process(
         args.append("--headless=new")
 
     try:
+        _logger.debug("Launching browser: %s on port %d", chrome_path, port)
         process = subprocess.Popen(
             args,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
         )
         return process
-    except Exception:
+    except Exception as e:
+        _logger.error(
+            "Failed to launch browser at '%s' on port %d: %s",
+            chrome_path, port, e,
+        )
         return None
 
 

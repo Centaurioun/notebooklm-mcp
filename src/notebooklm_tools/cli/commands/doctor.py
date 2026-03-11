@@ -233,8 +233,9 @@ def _check_clients(verbose: bool) -> bool:
                     result = subprocess.run(
                         [claude_cmd, "mcp", "list"],
                         capture_output=True, text=True, timeout=5,
+                        encoding="utf-8", errors="replace",
                     )
-                    if "notebooklm" in result.stdout.lower():
+                    if result.stdout and "notebooklm" in result.stdout.lower():
                         status = True
                 except (subprocess.TimeoutExpired, OSError):
                     pass
