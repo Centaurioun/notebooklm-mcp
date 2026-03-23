@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.5] - 2026-03-23
+
+### Fixed
+- **MCP `download_artifact` failing for report/mind_map/data_table (Issue #107)** — The MCP `download_artifact` tool exclusively routed through `download_async()`, but `_dispatch_async()` had no handlers for `report`, `mind_map`, or `data_table` (only `_dispatch_sync()` did). Added these three non-streaming types to the async dispatcher so all artifact types are downloadable via the MCP tool. Thanks to **@Neophen** for the detailed bug report!
+- **`poll_research` returning `None` for deep research in multi-task notebooks (Issue #106)** — When deep research mutates the task ID internally and the notebook has multiple research tasks, `poll_research` returned `None` instead of a valid task. The fallback now prefers any `in_progress` task, then falls back to the most recent task. Thanks to **@Neophen** for reporting!
+
 ## [0.5.4] - 2026-03-22
 
 ### Fixed

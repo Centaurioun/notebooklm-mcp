@@ -202,7 +202,13 @@ class ResearchMixin(BaseClient):
             # If there's exactly one task, it's safe to return it. (Issue #69)
             if len(research_tasks) == 1:
                 return research_tasks[0]
-            return None
+            # Multi-task notebooks: deep research may mutate task_id internally,
+            # so ID returned by start_research() won't match the polled ID.
+            # Best-effort: prefer any in-progress task, then most recent. (Issue #106)
+            for task in research_tasks:
+                if task.get("status") == "in_progress":
+                    return task
+            return research_tasks[0]
 
         # If only target_query provided (no task_id), match by query
         if target_query:
