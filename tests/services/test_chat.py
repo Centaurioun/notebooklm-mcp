@@ -215,6 +215,7 @@ class TestQueryStart:
     def test_ttl_cleanup_evicts_expired(self, mock_client):
         """Verify stale entries get cleaned up on the next query_start call."""
         import time as _time
+
         from notebooklm_tools.services.chat import (
             _pending_lock,
             _pending_queries,
@@ -300,7 +301,6 @@ class TestQueryStatus:
 
     def test_completed_entry_cleaned_after_read(self, mock_client):
         import time as _time
-        from notebooklm_tools.services.chat import _pending_lock, _pending_queries
 
         mock_client.query.return_value = {"answer": "ok"}
 
