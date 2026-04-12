@@ -17,6 +17,7 @@ VALID_GOALS = ("default", "learning_guide", "custom")
 VALID_RESPONSE_LENGTHS = ("default", "longer", "shorter")
 MAX_PROMPT_LENGTH = 10_000
 
+
 class QueryResult(TypedDict):
     """Result of a notebook query."""
 
