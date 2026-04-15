@@ -75,9 +75,12 @@ class StudioMixin(BaseClient):
     def _extract_audio_media_url(self, artifact_data: list[Any]) -> str | None:
         """Extract the best available audio media URL from an audio artifact payload.
 
-        Prefers URLs without the Google ``-dv`` render suffix which redirects
-        to ``lh3.google.com/rd-notebooklm`` and returns 400/404 when accessed
-        directly.  See: https://github.com/jacob-bd/notebooklm-mcp-cli/issues/158
+        Google's media list contains entries with different URL suffixes:
+          ``=m140-dv``  (priority 4, download variant — fast CDN)
+          ``=m140``     (priority 1, streaming transcode — slow CDN)
+        Prefer the ``-dv`` variant for downloads.
+
+        See: https://github.com/jacob-bd/notebooklm-mcp-cli/issues/158
         """
         if len(artifact_data) <= 6:
             return None
@@ -89,7 +92,7 @@ class StudioMixin(BaseClient):
         if len(audio_options) > 5 and isinstance(audio_options[5], list):
             media_list = audio_options[5]
 
-            # First pass: prefer downloadable audio/mp4 (skip -dv render URLs).
+            # First pass: prefer the -dv download variant (fast CDN).
             for item in media_list:
                 if (
                     isinstance(item, list)
@@ -97,11 +100,11 @@ class StudioMixin(BaseClient):
                     and isinstance(item[0], str)
                     and item[0].startswith("http")
                     and item[2] == "audio/mp4"
-                    and not item[0].endswith("-dv")
+                    and item[0].endswith("-dv")
                 ):
                     return item[0]
 
-            # Second pass: accept any audio/mp4 URL (including -dv) as fallback.
+            # Second pass: any audio/mp4 URL.
             for item in media_list:
                 if (
                     isinstance(item, list)
